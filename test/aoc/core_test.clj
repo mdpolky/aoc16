@@ -1,6 +1,6 @@
 (ns aoc.core-test
   (:require [clojure.test :refer :all]
-            [aoc.day1 :refer :all]))
+            [aoc.day01 :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

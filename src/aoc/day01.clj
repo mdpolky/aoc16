@@ -1,4 +1,4 @@
-(ns aoc.day1
+(ns aoc.day01
   (:require [clojure.string :as cs]))
 
 (def input (slurp "resources/day01.txt"))
