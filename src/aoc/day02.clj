@@ -25,7 +25,15 @@ to the bathroom. You picture a keypad like this:
 
 1 2 3
 4 5 6
-7 8 9"
+7 8 9
+
+part 2 keypad looks like this, use the same instructions as before:
+
+    1
+  2 3 4
+5 6 7 8 9
+  A B C
+    D"
 
 (def input (slurp "resources/day02.txt"))
 
@@ -38,6 +46,8 @@ to the bathroom. You picture a keypad like this:
 
 ;;start position
 (def start [0 0])
+
+(def start-2 [-2 0])
 
 ;;[x,y] pos->keypad key
 (def pos->key
@@ -77,7 +87,65 @@ to the bathroom. You picture a keypad like this:
     [next-x next-y]))
 
 (defn make-moves
+  "given a start position pos [x,y], follow a line of instructions ins, applying
+  the instructions recursively until none remain. When done, return pos and the
+  keyword which goes along with it."
   [pos ins]
   (if (empty? ins)
-    pos
+    [pos (pos->key pos)]
     (recur (move pos (first ins)) (rest ins))))
+
+;;solved using repl
+;; (make-moves start (nth puzzle 0))
+;; (make-moves new-pos (nth puzzle 1)) etc.
+
+;; let's lay out the positions for our keys on the updated keypad.
+(def pos->key-2
+  {[-1 -1] :A
+   [0 -1] :B
+   [1 -1] :C
+   [0 -2] :D
+   [0 2] :1
+   [-1 1] :2
+   [0 1] :3
+   [1 1] :4
+   [-2 0] :5
+   [-1 0] :6
+   [0 0] :7
+   [1 0] :8
+   [2 0] :9})
+
+;; From position :A, valid moves are up and right, etc.
+(def valid-move-2
+  {:A [:U :R]
+   :B [:U :D :R :L]
+   :C [:L :U]
+   :D [:U]
+   :1 [:D]
+   :2 [:D :R]
+   :3 [:U :D :R :L]
+   :4 [:D :L]
+   :5 [:R]
+   :6 [:U :D :R :L]
+   :7 [:U :D :R :L]
+   :8 [:U :D :R :L]
+   :9 [:L]})
+
+(defn move-2
+  "check what moves are possible from current position, if possible, make the
+  move, if not return where you are."
+  [pos i]
+  (let [pos-moves (valid-move-2 (pos->key-2 pos))
+        move (ins->trans i)]
+    (if (some #{i} pos-moves)
+      [(+ (first pos) (first move)) (+ (second pos) (second move))]
+      pos)))
+
+(defn make-moves-2
+  "similar to make-moves, positions, keys, and move function are updated."
+  [pos ins]
+  (if (empty? ins)
+    [pos (pos->key-2 pos)]
+    (recur (move-2 pos (first ins)) (rest ins))))
+
+;;solved using repl as in first make-moves
